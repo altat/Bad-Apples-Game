@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/*
+ * EvidenceManager displays the evidence in the inventory
+ */
 public class EvidenceManager : MonoBehaviour {
     public Evidence[] evidence = new Evidence[20];
     public int numElements;
@@ -15,22 +18,18 @@ public class EvidenceManager : MonoBehaviour {
     public DialogueManager dm;
     public Evidence currentEvidence;
 
-    public static bool isTrial;
     public bool investigation;
-
-    private int q;
-
-    public GameObject indestructable;
-
 
 
     private void OnEnable()
     {
         if (!investigation)
         {
+            // if not an investigation, load the global inventory
             evidence = GlobalInventory.Instance.evidences;
         } 
     }
+
     private void Start()
     {
         numElements = 0;
@@ -47,7 +46,7 @@ public class EvidenceManager : MonoBehaviour {
             present.gameObject.SetActive(false);
         }
 
-
+        // count the number of items in the inventory
         for (int j = 0; j < evidence.Length; j++)
         {
             if (evidence[j] != null)
@@ -64,6 +63,9 @@ public class EvidenceManager : MonoBehaviour {
         currentEvidence = evidence[i];
     }
 
+    /// <summary> 
+    /// Updates the information in the inventory
+    /// </summary> 
     public void UpdateInfo()
     {
         Text displayText = transform.Find("Evidence Description").GetComponent<Text>();
@@ -75,6 +77,9 @@ public class EvidenceManager : MonoBehaviour {
         displayImage.sprite = evidence[i].itemImage;
     }
 
+    /// <summary> 
+    /// Causes the next item in the inventory to be loaded
+    /// </summary> 
     public void Next()
     {
         if (i < numElements - 1)
@@ -87,6 +92,9 @@ public class EvidenceManager : MonoBehaviour {
         }
     }
 
+    /// <summary> 
+    /// Causes the previous item in the inventory to be loaded
+    /// </summary> 
     public void Back()
     {
         if (i > 0)
@@ -99,23 +107,33 @@ public class EvidenceManager : MonoBehaviour {
         }
     }
 
+    /// <summary> 
+    /// Presents the current evidence to the court and checks if the evidence is relevant to the case. Also closes the inventory if open.
+    /// </summary> 
     public void Present()
     {
         dm.openInventory();
         dm.checkEvidence();
     }
 
+    /// <summary> 
+    /// adds an evidence to the inventory
+    /// </summary> 
     public void add(Evidence e)
     {
         evidence[numElements++] = e;
     }
 
+    /// <summary> 
+    /// removes an evidence from the inventory
+    /// </summary> 
     public void remove(string name)
     {
         for (int i = 0; i < numElements; i++)
         {
             if (string.Equals(evidence[i].itemName, name, StringComparison.OrdinalIgnoreCase))
             {
+                // if the evidence is found, then shift all subsequent items to the left
                 for (int j = i; j < numElements; j++)
                 {
                     evidence[j] = evidence[j + 1];
@@ -125,6 +143,10 @@ public class EvidenceManager : MonoBehaviour {
             }
         }
     }
+
+    /// <summary> 
+    /// searches for an evidence in the inventory by name and returns true if found
+    /// </summary> 
     public bool search(string name)
     {
         for (int i = 0; i < numElements; i++)
@@ -135,11 +157,15 @@ public class EvidenceManager : MonoBehaviour {
         return false;
     }
 
+    /// <summary> 
+    /// writes the evidence in the local inventory to the global inventory
+    /// </summary> 
     public void saveInventory()
     {
-        GlobalInventory.Instance.evidences = evidence;
+        if (investigation) GlobalInventory.Instance.evidences = evidence;
     }
 
+    // triggered right before a new scene is loaded
     void OnDestroy()
     {
         saveInventory();

@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/* This script is based on a tutorial about making visual novels which can be found here: http://www.indiana.edu/~gamedev/2015/09/27/creating-a-visual-novel-in-unity/
+*/
+
 public class ChoiceButton : MonoBehaviour
 {
 
