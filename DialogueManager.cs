@@ -41,10 +41,8 @@ public class DialogueManager : MonoBehaviour
     public EvidenceManager em;
 
     public int Testimony;
-    public int[] testimonies;
 
     public int endTestimony;
-    public int[] completeTestimonies;
 
     public bool hasRead;
 
